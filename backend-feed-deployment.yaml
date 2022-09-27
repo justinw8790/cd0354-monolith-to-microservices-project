@@ -16,6 +16,13 @@ spec:
     spec:
       containers:
       - image: justin8790/udagram-api-feed:v1.2
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "2048Mi"
+            cpu: "500m"
         name: backend-feed
         imagePullPolicy: Always                
         env:
