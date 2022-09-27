@@ -15,7 +15,7 @@ spec:
         service: backend-feed
     spec:
       containers:
-      - image: justin8790/udagram-api-feed:v1.2
+      - image: justin8790/udagram-api-feed:v1.3
         resources:
           requests:
             memory: "64Mi"
