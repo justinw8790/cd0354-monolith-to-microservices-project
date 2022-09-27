@@ -15,7 +15,7 @@ spec:
         service: backend-feed
     spec:
       containers:
-      - image: justin8790/udagram-api-feed:v1.1
+      - image: justin8790/udagram-api-feed:v1.2
         name: backend-feed
         imagePullPolicy: Always                
         env:
