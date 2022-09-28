@@ -1,0 +1,165 @@
+PS C:\Users\justi> kubectl get pods
+NAME                            READY   STATUS    RESTARTS   AGE
+backend-feed-8d69964c8-j98hv    1/1     Running   0          38m
+backend-user-6b4d8478c4-7jcdq   1/1     Running   0          38m
+backend-user-6b4d8478c4-jcflx   1/1     Running   0          8m57s
+backend-user-6b4d8478c4-kx8hc   1/1     Running   0          8m57s
+frontend-7d7cdc578b-d2wb2       1/1     Running   0          11m
+reverseproxy-599fb59778-8q7km   1/1     Running   0          37m
+
+PS C:\Users\justi> kubectl describe services
+Name:              backend-feed
+Namespace:         default
+Labels:            service=backend-feed
+Annotations:       <none>
+Selector:          service=backend-feed
+Type:              ClusterIP
+IP Family Policy:  SingleStack
+IP Families:       IPv4
+IP:                10.100.250.49
+IPs:               10.100.250.49
+Port:              8080  8080/TCP
+TargetPort:        8080/TCP
+Endpoints:         172.31.40.239:8080
+Session Affinity:  None
+Events:            <none>
+
+
+Name:              backend-user
+Namespace:         default
+Labels:            service=backend-user
+Annotations:       <none>
+Selector:          service=backend-user
+Type:              ClusterIP
+IP Family Policy:  SingleStack
+IP Families:       IPv4
+IP:                10.100.190.167
+IPs:               10.100.190.167
+Port:              8080  8080/TCP
+TargetPort:        8080/TCP
+Endpoints:         172.31.37.193:8080,172.31.76.80:8080,172.31.79.147:8080
+Session Affinity:  None
+Events:            <none>
+
+
+Name:              frontend
+Namespace:         default
+Labels:            service=frontend
+Annotations:       <none>
+Selector:          service=frontend
+Type:              ClusterIP
+IP Family Policy:  SingleStack
+IP Families:       IPv4
+IP:                10.100.19.118
+IPs:               10.100.19.118
+Port:              8100  8100/TCP
+TargetPort:        80/TCP
+Endpoints:         172.31.41.188:80
+Session Affinity:  None
+Events:            <none>
+
+
+Name:              kubernetes
+Namespace:         default
+Labels:            component=apiserver
+                   provider=kubernetes
+Annotations:       <none>
+Selector:          <none>
+Type:              ClusterIP
+IP Family Policy:  SingleStack
+IP Families:       IPv4
+IP:                10.100.0.1
+IPs:               10.100.0.1
+Port:              https  443/TCP
+TargetPort:        443/TCP
+Endpoints:         172.31.36.23:443,172.31.66.219:443
+Session Affinity:  None
+Events:            <none>
+
+
+Name:                     publicfrontend
+Namespace:                default
+Labels:                   service=frontend
+Annotations:              <none>
+Selector:                 api=external,service=frontend
+Type:                     LoadBalancer
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.100.78.76
+IPs:                      10.100.78.76
+LoadBalancer Ingress:     a09129150c7f54fb8a18d94b71369ff8-2100452738.us-east-1.elb.amazonaws.com
+Port:                     <unset>  80/TCP
+TargetPort:               80/TCP
+NodePort:                 <unset>  32274/TCP
+Endpoints:                172.31.41.188:80
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:
+  Type    Reason                Age   From                Message
+  ----    ------                ----  ----                -------
+  Normal  EnsuringLoadBalancer  24m   service-controller  Ensuring load balancer
+  Normal  EnsuredLoadBalancer   23m   service-controller  Ensured load balancer
+
+
+Name:                     publicreverseproxy
+Namespace:                default
+Labels:                   service=reverseproxy
+Annotations:              <none>
+Selector:                 service=reverseproxy
+Type:                     LoadBalancer
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.100.226.138
+IPs:                      10.100.226.138
+LoadBalancer Ingress:     a0598aba5d30747c8bdd954117233e82-977402091.us-east-1.elb.amazonaws.com
+Port:                     <unset>  8080/TCP
+TargetPort:               8080/TCP
+NodePort:                 <unset>  32560/TCP
+Endpoints:                172.31.78.100:8080
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:
+  Type    Reason                Age   From                Message
+  ----    ------                ----  ----                -------
+  Normal  EnsuringLoadBalancer  21m   service-controller  Ensuring load balancer
+  Normal  EnsuredLoadBalancer   21m   service-controller  Ensured load balancer
+
+
+Name:              reverseproxy
+Namespace:         default
+Labels:            service=reverseproxy
+Annotations:       <none>
+Selector:          service=reverseproxy
+Type:              ClusterIP
+IP Family Policy:  SingleStack
+IP Families:       IPv4
+IP:                10.100.77.79
+IPs:               10.100.77.79
+Port:              8080  8080/TCP
+TargetPort:        8080/TCP
+Endpoints:         172.31.78.100:8080
+Session Affinity:  None
+Events:            <none>
+
+PS C:\Users\justi> kubectl describe hpa
+Name:                                                  backend-user
+Namespace:                                             default
+Labels:                                                <none>
+Annotations:                                           <none>
+CreationTimestamp:                                     Wed, 28 Sep 2022 10:31:50 -0400
+Reference:                                             Deployment/backend-user
+Metrics:                                               ( current / target )
+  resource cpu on pods  (as a percentage of request):  0% (0) / 70%
+Min replicas:                                          3
+Max replicas:                                          5
+Deployment pods:                                       3 current / 3 desired
+Conditions:
+  Type            Status  Reason            Message
+  ----            ------  ------            -------
+  AbleToScale     True    ReadyForNewScale  recommended size matches current size
+  ScalingActive   True    ValidMetricFound  the HPA was able to successfully calculate a replica count from cpu resource utilization (percentage of request)
+  ScalingLimited  True    TooFewReplicas    the desired replica count is less than the minimum replica count
+Events:
+  Type     Reason                        Age                     From                       Message
+  ----     ------                        ----                    ----                       -------
+  Normal   SuccessfulRescale             9m11s                   horizontal-pod-autoscaler  New size: 3; reason: Current number of replicas below Spec.MinReplicas
